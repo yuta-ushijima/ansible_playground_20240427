@@ -2,6 +2,8 @@
 # tasks file for ruby
 - name: Install dependencies packages for ruby
   become: yes
+  vars_files:
+    - ../vars/main.yml
   ansible.builtin.yum:
     name: "{{ ruby_dependencies_pkg }}"
     state: present
