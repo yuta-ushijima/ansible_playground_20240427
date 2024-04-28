@@ -48,7 +48,7 @@
 
 - name: Install Specific ruby version
   shell: bash -lc "rbenv install 3.2.3"
-  when: "'3.2.3' in installed_ruby_versions_check.stdout_lines"
+  when: "'3.2.3' not in installed_ruby_versions_check.stdout_lines"
 
 - name: Check global ruby version
   ansible.builtin.shell:
@@ -58,4 +58,4 @@
 
 - name: Set global ruby version
   shell: bash -lc "rbenv global 3.2.3"
-  when: "'3.2.3' in global_ruby_version_check.stdout_lines"
+  when: "'3.2.3' not in global_ruby_version_check.stdout_lines"
