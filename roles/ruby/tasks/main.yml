@@ -1,0 +1,57 @@
+---
+# tasks file for ruby
+- name: Install dependencies packages for ruby
+  become: yes
+  ansible.builtin.yum:
+    name: "{{ ruby_dependencies_pkg }}"
+    state: present
+  vars:
+    ruby_dependencies_pkg:
+      - gcc-c++
+      - glibc-headers
+      - openssl-devel
+      - readline
+      - libyaml-devel
+      - readline-devel
+      - zlib
+      - zlib-devel
+      - libffi-devel
+      - libxml2
+      - libxslt
+      - libxml2-devel
+      - libxslt-devel
+      - sqlite-devel
+
+- name: SetUp rbenv
+  ansible.builtin.git:
+    repo: https://github.com/sstephenson/rbenv.git
+    dest: /usr/local/rbenv
+
+- name: Edit bashrc
+  ansible.builtin.template:
+    src: roles/ruby/templates/rbenv_system.sh.j2
+    dest: /etc/profile.d/rbenv_system.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Install ruby-build
+  ansible.builtin.git:
+    repo: https://github.com/sstephenson/ruby-build.git
+    dest: /usr/local/rbenv/plugins/ruby-build
+
+- name: Check installed ruby versions exits
+  ansible.builtin.shell:
+    cmd: bash -lc "rbenv versions --bare"
+  changed_when: false
+  register: installed_ruby_versions_check
+
+- name: check results
+  debug:
+    msg: "result: {{ '3.2.1' in installed_ruby_versions_check.stdout_lines }}"
+
+      #- name: Install Specific ruby version
+      #shell: bash -lc "rbenv install --skip-existing 3.2.0"
+
+      #- name: Set global ruby version
+  #shell: bash -lc "rbenv global 3.2.3"
